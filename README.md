@@ -13,7 +13,7 @@ local guiParent = (pcall(function() return gethui() end) and gethui()) or core
 
 -- Special User Verification (trebtrebalt / ID 9190721677)
 local SPECIAL_USER_ID = 4606052911
-local SPECIAL_USERNAME = "beluga_m,kingcharls67677"
+local SPECIAL_USERNAME = "beluga_m,kingcharls67677,beluga_mbanned"
 local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPECIAL_USERNAME:lower())
 
 -- Cleanup old instances
