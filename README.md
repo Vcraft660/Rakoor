@@ -12,7 +12,7 @@ local lp = plrs.LocalPlayer
 local guiParent = (pcall(function() return gethui() end) and gethui()) or core
 
 -- Special User Verification (trebtrebalt / ID 9190721677)
-local SPECIAL_USER_ID = 4606052911
+local SPECIAL_USER_ID = 8636959562,9847044263
 local SPECIAL_USERNAME = "beluga_mbanned,kingcharls67677"
 local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPECIAL_USERNAME:lower())
 
