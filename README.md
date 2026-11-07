@@ -19,7 +19,7 @@ local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPEC
 -- Cleanup old instances
 for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "PenguinHub" or obj.Name == "PenguinKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
 if lp and lp:FindFirstChild("PlayerGui") then
-    for _, obj in pairs(lp.PlayerGui:GetChildren()) do if obj.Name == "PenguinHub" or obj.Name == "PenguinKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
+    for _, obj in pairs(lp.PlayerGui:GetChildren()) do if obj.Name == "Beluga Hub" or obj.Name == "BelugaKey" or obj.Name == "BelugaMiniStats" then obj:Destroy() end end
 end
 
 local conns, tasks = {}, {}
@@ -27,7 +27,7 @@ getgenv().PenguinLoaded = function()
     for _, c in pairs(conns) do if c then c:Disconnect() end end
     for _, t in pairs(tasks) do pcall(task.cancel, t) end
     table.clear(conns); table.clear(tasks)
-    for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "PenguinHub" or obj.Name == "PenguinKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
+    for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "BelugaHub" or obj.Name == "BelugaKey" or obj.Name == "BelugaMiniStats" then obj:Destroy() end end
 end
 
 -- Save / Load Level System (Max Level 250)
@@ -125,7 +125,7 @@ keyScreen.Name = "PenguinKey"; keyScreen.ResetOnSpawn = false; keyScreen.Display
 
 -- Mini Level Status Widget with Progress Bar
 local miniGui = Instance.new("ScreenGui", guiParent)
-miniGui.Name = "PenguinMiniStats"; miniGui.ResetOnSpawn = false; miniGui.DisplayOrder = 998; miniGui.IgnoreGuiInset = true
+miniGui.Name = "BelugaMiniStats"; miniGui.ResetOnSpawn = false; miniGui.DisplayOrder = 998; miniGui.IgnoreGuiInset = true
 
 local miniFrame = Instance.new("Frame", miniGui)
 miniFrame.Size = UDim2.new(0, 210, 0, 110); miniFrame.Position = UDim2.new(0, 20, 0, 150)
@@ -136,7 +136,7 @@ makeDrag(miniFrame)
 
 local miniTitle = Instance.new("TextLabel", miniFrame)
 miniTitle.Size = UDim2.new(1, 0, 0, 25); miniTitle.BackgroundTransparency = 1
-miniTitle.Text = isSpecialUser and "🛡️ TREBTREBALT STATS" or "🐧 PENGUIN STATS"
+miniTitle.Text = isSpecialUser and "🛡️ Beluga Stats" or "🛡 Player Stats"
 miniTitle.TextColor3 = isSpecialUser and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(120, 210, 255)
 miniTitle.Font = Enum.Font.GothamBold; miniTitle.TextSize = 12
 
@@ -192,7 +192,7 @@ makeDrag(main)
 
 local toggle = Instance.new("TextButton", screen)
 toggle.Size = UDim2.new(0, 48, 0, 48); toggle.Position = UDim2.new(0, 20, 0.3, 0)
-toggle.BackgroundColor3 = Color3.fromRGB(24, 38, 64); toggle.Text = isSpecialUser and "🛡️" or "🐧"
+toggle.BackgroundColor3 = Color3.fromRGB(24, 38, 64); toggle.Text = isSpecialUser and "🛡️" or "🛡"
 toggle.TextSize = 24; toggle.ZIndex = 200; toggle.Visible = false
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 12)
 local ts = Instance.new("UIStroke", toggle); ts.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255); ts.Thickness = 2
@@ -204,7 +204,7 @@ makeDrag(main, top)
 
 local title = Instance.new("TextLabel", top)
 title.Size = UDim2.new(0, 260, 1, 0); title.Position = UDim2.new(0, 15, 0, 0); title.BackgroundTransparency = 1
-title.Text = isSpecialUser and "🛡️ TREBTREBALT HUB [OWNER] 🛡️" or "🐧 PENGUIN HUB 🐧"
+title.Text = isSpecialUser and "🛡️ Beluga [OWNER] 🛡️" or "🛡 "
 title.TextColor3 = isSpecialUser and Color3.fromRGB(255, 120, 120) or Color3.fromRGB(120, 210, 255)
 title.Font = Enum.Font.GothamBold; title.TextSize = 15
 
@@ -272,7 +272,7 @@ local function createTab(name, icon)
     return page
 end
 
-local mainPage = createTab("Main", "🐧")
+local mainPage = createTab("Main", "🦭")
 local autoPage = createTab("Auto", "🔄")
 local dropsPage = createTab("Drops", "🎁")
 local playerPage = createTab("Player", "⚡")
