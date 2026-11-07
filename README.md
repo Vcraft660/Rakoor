@@ -17,7 +17,7 @@ local SPECIAL_USERNAME = "beluga_m,kingcharls67677"
 local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPECIAL_USERNAME:lower())
 
 -- Cleanup old instances
-for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "PenguinHub" or obj.Name == "PenguinKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
+for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "BelugaHub" or obj.Name == "BelugaKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
 if lp and lp:FindFirstChild("PlayerGui") then
     for _, obj in pairs(lp.PlayerGui:GetChildren()) do if obj.Name == "Beluga Hub" or obj.Name == "BelugaKey" or obj.Name == "BelugaMiniStats" then obj:Destroy() end end
 end
@@ -118,10 +118,10 @@ end
 
 -- Screen Guis
 local screen = Instance.new("ScreenGui", guiParent)
-screen.Name = "PenguinHub"; screen.ResetOnSpawn = false; screen.DisplayOrder = 999; screen.IgnoreGuiInset = true
+screen.Name = "BelugaHub"; screen.ResetOnSpawn = false; screen.DisplayOrder = 999; screen.IgnoreGuiInset = true
 
 local keyScreen = Instance.new("ScreenGui", guiParent)
-keyScreen.Name = "PenguinKey"; keyScreen.ResetOnSpawn = false; keyScreen.DisplayOrder = 1000; keyScreen.IgnoreGuiInset = true
+keyScreen.Name = "BelugaKey"; keyScreen.ResetOnSpawn = false; keyScreen.DisplayOrder = 1000; keyScreen.IgnoreGuiInset = true
 
 -- Mini Level Status Widget with Progress Bar
 local miniGui = Instance.new("ScreenGui", guiParent)
@@ -165,7 +165,7 @@ makeDrag(keyMain)
 
 local kTitle = Instance.new("TextLabel", keyMain)
 kTitle.Size = UDim2.new(1, 0, 0, 40); kTitle.BackgroundTransparency = 1; kTitle.ZIndex = 301
-kTitle.Text = isSpecialUser and "🛡️ PENGUIN HUB — OWNER AUTH 🛡️" or "🐧 PENGUIN HUB — AUTHENTICATION 🐧"
+kTitle.Text = isSpecialUser and "🛡️ Beluga HUB — OWNER AUTH 🛡️" or "🦭 Beluga HUB — AUTHENTICATION 🐧"
 kTitle.TextColor3 = isSpecialUser and Color3.fromRGB(255, 120, 120) or Color3.fromRGB(120, 210, 255)
 kTitle.Font = Enum.Font.GothamBold; kTitle.TextSize = 14
 
@@ -277,7 +277,7 @@ local autoPage = createTab("Auto", "🔄")
 local dropsPage = createTab("Drops", "🎁")
 local playerPage = createTab("Player", "⚡")
 
--- Recreate Admin Tab ONLY for trebtrebalt / 9190721677
+-- Recreate Admin Tab ONLY for beluga_m / 4606052911
 local adminPage = nil
 if isSpecialUser then
     adminPage = createTab("Admin", "🛡️")
@@ -374,10 +374,10 @@ end
 
 -- Standard Features Setup
 local normalFastOn = false
-addLevelGatedToggle(mainPage, "🐧 NORMAL PENGUIN LOOP", 1, function(state) normalFastOn = state end)
+addLevelGatedToggle(mainPage, "🐧 NORMAL BELUGA LOOP", 1, function(state) normalFastOn = state end)
 
 local ultraFastOn = false
-addLevelGatedToggle(mainPage, "🚀 ULTRA FAST PENGUIN LOOP", 10, function(state) ultraFastOn = state end)
+addLevelGatedToggle(mainPage, "🚀 ULTRA FAST BELUGA LOOP", 10, function(state) ultraFastOn = state end)
 
 local hyperGodLoopOn = false
 addLevelGatedToggle(mainPage, "🔥 HYPER GOD LOOP (MAX SPEED)", 150, function(state) hyperGodLoopOn = state end)
