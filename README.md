@@ -271,7 +271,7 @@ close.Activated:Connect(function() main.Visible = not main.Visible end)
 toggle.Activated:Connect(function() main.Visible = not main.Visible end)
 
 kBtn.Activated:Connect(function()
-    if kBox.Text == "DoomKey3220262" then
+    if kBox.Text == "beluga" then
         keyScreen:Destroy()
         main.Visible = true
         toggle.Visible = true
