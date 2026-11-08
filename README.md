@@ -1,4 +1,4 @@
-if getgenv().PenguinLoaded then pcall(getgenv().PenguinLoaded) end
+if not game:IsLoaded() then game.Loaded:Wait() end
 
 local plrs = game:GetService("Players")
 local ws = game:GetService("Workspace")
@@ -11,27 +11,49 @@ local hs = game:GetService("HttpService")
 local lp = plrs.LocalPlayer
 local guiParent = (pcall(function() return gethui() end) and gethui()) or core
 
--- Special User Verification (trebtrebalt / ID 9190721677)
-local SPECIAL_USER_ID = 8636959562,9847044263
-local SPECIAL_USERNAME = "beluga_mbanned,kingcharls67677"
-local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPECIAL_USERNAME:lower())
+local SPECIAL_USER_ID = 9847044263,8636959562
+local SPECIAL_USERNAME = "beluga_mbanned"
+local ADMIN_USER_ID = 8636959562,9847044263
+local ADMIN_USERNAME = "beluga_mbanned"
+local isSpecialUser = (lp.UserId == SPECIAL_USER_ID) or (lp.Name:lower() == SPECIAL_USERNAME:lower()) or (lp.UserId == ADMIN_USER_ID) or (lp.Name:lower() == ADMIN_USERNAME:lower())
 
--- Cleanup old instances
-for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "BelugaHub" or obj.Name == "BelugaKey" or obj.Name == "PenguinMiniStats" then obj:Destroy() end end
+for _, obj in pairs(guiParent:GetChildren()) do 
+    if obj.Name == "DoomHUBREVAMPED" or obj.Name == "DoomKey" or obj.Name == "DoomMiniStats" or obj.Name == "DoomHub" or obj.Name == "PenguinHub" then 
+        obj:Destroy() 
+    end 
+end
+
 if lp and lp:FindFirstChild("PlayerGui") then
-    for _, obj in pairs(lp.PlayerGui:GetChildren()) do if obj.Name == "Beluga Hub" or obj.Name == "BelugaKey" or obj.Name == "BelugaMiniStats" then obj:Destroy() end end
+    for _, obj in pairs(lp.PlayerGui:GetChildren()) do 
+        if obj.Name == "DoomHUBREVAMPED" or obj.Name == "DoomKey" or obj.Name == "DoomMiniStats" or obj.Name == "DoomHub" or obj.Name == "PenguinHub" then 
+            obj:Destroy() 
+        end 
+    end
 end
 
 local conns, tasks = {}, {}
-getgenv().PenguinLoaded = function()
+getgenv().DoomLoaded = function()
     for _, c in pairs(conns) do if c then c:Disconnect() end end
     for _, t in pairs(tasks) do pcall(task.cancel, t) end
     table.clear(conns); table.clear(tasks)
-    for _, obj in pairs(guiParent:GetChildren()) do if obj.Name == "BelugaHub" or obj.Name == "BelugaKey" or obj.Name == "BelugaMiniStats" then obj:Destroy() end end
+    for _, obj in pairs(guiParent:GetChildren()) do 
+        if obj.Name == "DoomHUBREVAMPED" or obj.Name == "DoomKey" or obj.Name == "DoomMiniStats" then 
+            obj:Destroy() 
+        end 
+    end
 end
 
--- Save / Load Level System (Max Level 250)
-local saveFileName = "PenguinHub_SaveData.json"
+local function applyGradient(inst, col1, col2, rot)
+    local g = Instance.new("UIGradient", inst)
+    g.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, col1),
+        ColorSequenceKeypoint.new(1, col2)
+    })
+    g.Rotation = rot or 45
+    return g
+end
+
+local saveFileName = "DoomHUBREVAMPED_SaveData.json"
 local MAX_LEVEL = 250
 local levelData = {level = 1, xp = 0, maxXp = 100}
 
@@ -116,86 +138,113 @@ local function makeDrag(f, h)
     end)
 end
 
--- Screen Guis
+local function attachHorns(parentFrame)
+    local leftHorn = Instance.new("TextLabel", parentFrame)
+    leftHorn.Size = UDim2.new(0, 45, 0, 45)
+    leftHorn.Position = UDim2.new(0, -10, 0, -32)
+    leftHorn.BackgroundTransparency = 1
+    leftHorn.Text = "😈"
+    leftHorn.TextSize = 36
+    leftHorn.Rotation = -25
+    leftHorn.ZIndex = 50
+
+    local rightHorn = Instance.new("TextLabel", parentFrame)
+    rightHorn.Size = UDim2.new(0, 45, 0, 45)
+    rightHorn.Position = UDim2.new(1, -35, 0, -32)
+    rightHorn.BackgroundTransparency = 1
+    rightHorn.Text = "😈"
+    rightHorn.TextSize = 36
+    rightHorn.Rotation = 25
+    rightHorn.ZIndex = 50
+end
+
 local screen = Instance.new("ScreenGui", guiParent)
-screen.Name = "BelugaHub"; screen.ResetOnSpawn = false; screen.DisplayOrder = 999; screen.IgnoreGuiInset = true
+screen.Name = "DoomHUBREVAMPED"; screen.ResetOnSpawn = false; screen.DisplayOrder = 999; screen.IgnoreGuiInset = true
 
 local keyScreen = Instance.new("ScreenGui", guiParent)
-keyScreen.Name = "BelugaKey"; keyScreen.ResetOnSpawn = false; keyScreen.DisplayOrder = 1000; keyScreen.IgnoreGuiInset = true
+keyScreen.Name = "DoomKey"; keyScreen.ResetOnSpawn = false; keyScreen.DisplayOrder = 1000; keyScreen.IgnoreGuiInset = true
 
--- Mini Level Status Widget with Progress Bar
 local miniGui = Instance.new("ScreenGui", guiParent)
-miniGui.Name = "BelugaMiniStats"; miniGui.ResetOnSpawn = false; miniGui.DisplayOrder = 998; miniGui.IgnoreGuiInset = true
+miniGui.Name = "DoomMiniStats"; miniGui.ResetOnSpawn = false; miniGui.DisplayOrder = 998; miniGui.IgnoreGuiInset = true
 
 local miniFrame = Instance.new("Frame", miniGui)
 miniFrame.Size = UDim2.new(0, 210, 0, 110); miniFrame.Position = UDim2.new(0, 20, 0, 150)
-miniFrame.BackgroundColor3 = Color3.fromRGB(15, 22, 38); miniFrame.Visible = false
+miniFrame.BackgroundColor3 = Color3.fromRGB(18, 10, 12); miniFrame.Visible = false
 Instance.new("UICorner", miniFrame).CornerRadius = UDim.new(0, 10)
-local msStroke = Instance.new("UIStroke", miniFrame); msStroke.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255)
+local msStroke = Instance.new("UIStroke", miniFrame); msStroke.Thickness = 2
+applyGradient(msStroke, Color3.fromRGB(255, 30, 30), Color3.fromRGB(255, 140, 0))
 makeDrag(miniFrame)
 
 local miniTitle = Instance.new("TextLabel", miniFrame)
 miniTitle.Size = UDim2.new(1, 0, 0, 25); miniTitle.BackgroundTransparency = 1
-miniTitle.Text = isSpecialUser and "🛡️ Beluga Stats" or "🛡 Player Stats"
-miniTitle.TextColor3 = isSpecialUser and Color3.fromRGB(255, 100, 100) or Color3.fromRGB(120, 210, 255)
-miniTitle.Font = Enum.Font.GothamBold; miniTitle.TextSize = 12
+miniTitle.Text = isSpecialUser and "🔥 ADMIN STATS" or "💀 DOOM REVAMPED STATS"
+miniTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+miniTitle.Font = Enum.Font.GothamBold; miniTitle.TextSize = 11
+applyGradient(miniTitle, Color3.fromRGB(255, 60, 60), Color3.fromRGB(255, 160, 0))
 
 local miniStatus = Instance.new("TextLabel", miniFrame)
 miniStatus.Size = UDim2.new(1, -10, 0, 35); miniStatus.Position = UDim2.new(0, 8, 0, 25); miniStatus.BackgroundTransparency = 1
-miniStatus.Text = "Level: 250 / 250\nXP: MAX 👑"; miniStatus.TextColor3 = Color3.fromRGB(0, 220, 150)
+miniStatus.Text = "Level: 250 / 250\nXP: MAX 👑"; miniStatus.TextColor3 = Color3.fromRGB(0, 255, 160)
 miniStatus.Font = Enum.Font.GothamBold; miniStatus.TextSize = 11; miniStatus.TextXAlignment = Enum.TextXAlignment.Left
 
 local barBg = Instance.new("Frame", miniFrame)
 barBg.Size = UDim2.new(1, -16, 0, 12); barBg.Position = UDim2.new(0, 8, 0, 75)
-barBg.BackgroundColor3 = Color3.fromRGB(30, 42, 65)
+barBg.BackgroundColor3 = Color3.fromRGB(35, 18, 20)
 Instance.new("UICorner", barBg).CornerRadius = UDim.new(0, 6)
 
 local barFill = Instance.new("Frame", barBg)
 barFill.Size = UDim2.new(1, 0, 1, 0)
-barFill.BackgroundColor3 = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255)
+barFill.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+applyGradient(barFill, Color3.fromRGB(255, 0, 50), Color3.fromRGB(255, 150, 0))
 Instance.new("UICorner", barFill).CornerRadius = UDim.new(0, 6)
 
--- Key Window
 local keyMain = Instance.new("Frame", keyScreen)
-keyMain.Size = UDim2.new(0, 400, 0, 220); keyMain.Position = UDim2.new(0.5, -200, 0.5, -110)
-keyMain.BackgroundColor3 = Color3.fromRGB(18, 28, 48); keyMain.ZIndex = 300
+keyMain.Size = UDim2.new(0, 400, 0, 230); keyMain.Position = UDim2.new(0.5, -200, 0.5, -115)
+keyMain.BackgroundColor3 = Color3.fromRGB(18, 10, 12); keyMain.ZIndex = 300
 Instance.new("UICorner", keyMain).CornerRadius = UDim.new(0, 14)
-local ks = Instance.new("UIStroke", keyMain); ks.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255); ks.Thickness = 2
+local ks = Instance.new("UIStroke", keyMain); ks.Thickness = 2
+applyGradient(ks, Color3.fromRGB(255, 0, 60), Color3.fromRGB(255, 120, 0))
 makeDrag(keyMain)
+attachHorns(keyMain)
 
 local kTitle = Instance.new("TextLabel", keyMain)
 kTitle.Size = UDim2.new(1, 0, 0, 40); kTitle.BackgroundTransparency = 1; kTitle.ZIndex = 301
-kTitle.Text = isSpecialUser and "🛡️ Beluga HUB — OWNER AUTH 🛡️" or "🦭 Beluga HUB — AUTHENTICATION 🐧"
-kTitle.TextColor3 = isSpecialUser and Color3.fromRGB(255, 120, 120) or Color3.fromRGB(120, 210, 255)
-kTitle.Font = Enum.Font.GothamBold; kTitle.TextSize = 14
+kTitle.Text = isSpecialUser and "🔥 DOOM HUB REVAMPED — ADMIN AUTH 🔥" or "💀 DOOM HUB REVAMPED — AUTHENTICATION 💀"
+kTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+kTitle.Font = Enum.Font.GothamBold; kTitle.TextSize = 12
+applyGradient(kTitle, Color3.fromRGB(255, 50, 50), Color3.fromRGB(255, 150, 0))
 
 local kBox = Instance.new("TextBox", keyMain)
-kBox.Size = UDim2.new(1, -40, 0, 45); kBox.Position = UDim2.new(0, 20, 0, 60); kBox.ZIndex = 301
-kBox.BackgroundColor3 = Color3.fromRGB(28, 42, 70); kBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-kBox.PlaceholderText = "Enter Key..."; kBox.Text = ""; kBox.Font = Enum.Font.GothamBold; kBox.TextSize = 14
+kBox.Size = UDim2.new(1, -40, 0, 45); kBox.Position = UDim2.new(0, 20, 0, 65); kBox.ZIndex = 301
+kBox.BackgroundColor3 = Color3.fromRGB(28, 15, 18); kBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+kBox.PlaceholderText = "Enter Key..."; kBox.Text = ""; kBox.Font = Enum.Font.GothamBold; kBox.TextSize = 13
 Instance.new("UICorner", kBox).CornerRadius = UDim.new(0, 8)
-local kbs = Instance.new("UIStroke", kBox); kbs.Color = Color3.fromRGB(0, 140, 220)
+local kbs = Instance.new("UIStroke", kBox); kbs.Thickness = 1.5
+applyGradient(kbs, Color3.fromRGB(255, 40, 40), Color3.fromRGB(255, 140, 0))
 
 local kBtn = Instance.new("TextButton", keyMain)
-kBtn.Size = UDim2.new(1, -40, 0, 45); kBtn.Position = UDim2.new(0, 20, 0, 125); kBtn.ZIndex = 301
-kBtn.BackgroundColor3 = Color3.fromRGB(0, 140, 220); kBtn.Text = "SUBMIT KEY"; kBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-kBtn.Font = Enum.Font.GothamBold; kBtn.TextSize = 14
+kBtn.Size = UDim2.new(1, -40, 0, 45); kBtn.Position = UDim2.new(0, 20, 0, 130); kBtn.ZIndex = 301
+kBtn.BackgroundColor3 = Color3.fromRGB(200, 30, 30); kBtn.Text = "SUBMIT KEY"; kBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+kBtn.Font = Enum.Font.GothamBold; kBtn.TextSize = 13
 Instance.new("UICorner", kBtn).CornerRadius = UDim.new(0, 8)
+applyGradient(kBtn, Color3.fromRGB(230, 20, 20), Color3.fromRGB(255, 100, 0))
 
--- Main Hub Window
 local main = Instance.new("Frame", screen)
 main.Size = UDim2.new(0, 640, 0, 420); main.Position = UDim2.new(0.5, -320, 0.5, -210)
-main.BackgroundColor3 = Color3.fromRGB(18, 28, 48); main.ZIndex = 10; main.Visible = false
+main.BackgroundColor3 = Color3.fromRGB(16, 10, 12); main.ZIndex = 10; main.Visible = false
 Instance.new("UICorner", main).CornerRadius = UDim.new(0, 14)
-local ms = Instance.new("UIStroke", main); ms.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255); ms.Thickness = 2
+local ms = Instance.new("UIStroke", main); ms.Thickness = 2.5
+applyGradient(ms, Color3.fromRGB(255, 0, 50), Color3.fromRGB(255, 140, 0))
 makeDrag(main)
+attachHorns(main)
 
 local toggle = Instance.new("TextButton", screen)
 toggle.Size = UDim2.new(0, 48, 0, 48); toggle.Position = UDim2.new(0, 20, 0.3, 0)
-toggle.BackgroundColor3 = Color3.fromRGB(24, 38, 64); toggle.Text = isSpecialUser and "🛡️" or "🛡"
+toggle.BackgroundColor3 = Color3.fromRGB(28, 14, 16); toggle.Text = "👿"
 toggle.TextSize = 24; toggle.ZIndex = 200; toggle.Visible = false
 Instance.new("UICorner", toggle).CornerRadius = UDim.new(0, 12)
-local ts = Instance.new("UIStroke", toggle); ts.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 180, 255); ts.Thickness = 2
+local ts = Instance.new("UIStroke", toggle); ts.Thickness = 2
+applyGradient(ts, Color3.fromRGB(255, 0, 50), Color3.fromRGB(255, 140, 0))
 makeDrag(toggle)
 
 local top = Instance.new("Frame", main)
@@ -203,25 +252,26 @@ top.Size = UDim2.new(1, 0, 0, 45); top.BackgroundTransparency = 1; top.ZIndex = 
 makeDrag(main, top)
 
 local title = Instance.new("TextLabel", top)
-title.Size = UDim2.new(0, 260, 1, 0); title.Position = UDim2.new(0, 15, 0, 0); title.BackgroundTransparency = 1
-title.Text = isSpecialUser and "🛡️ Beluga [OWNER] 🛡️" or "🛡 "
-title.TextColor3 = isSpecialUser and Color3.fromRGB(255, 120, 120) or Color3.fromRGB(120, 210, 255)
-title.Font = Enum.Font.GothamBold; title.TextSize = 15
+title.Size = UDim2.new(0, 280, 1, 0); title.Position = UDim2.new(0, 15, 0, 0); title.BackgroundTransparency = 1
+title.Text = isSpecialUser and "🔥 ADMIN HUB [OWNER] 🔥" or "💀 DOOM HUB REVAMPED 💀"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold; title.TextSize = 13
+applyGradient(title, Color3.fromRGB(255, 60, 60), Color3.fromRGB(255, 160, 0))
 
 local levelLabel = Instance.new("TextLabel", top)
 levelLabel.Size = UDim2.new(0, 220, 1, 0); levelLabel.Position = UDim2.new(1, -260, 0, 0); levelLabel.BackgroundTransparency = 1
-levelLabel.Text = "LVL: 250/250 [MAX 👑]"; levelLabel.TextColor3 = Color3.fromRGB(0, 220, 150); levelLabel.Font = Enum.Font.GothamBold; levelLabel.TextSize = 12
+levelLabel.Text = "LVL: 250/250 [MAX 👑]"; levelLabel.TextColor3 = Color3.fromRGB(0, 255, 160); levelLabel.Font = Enum.Font.GothamBold; levelLabel.TextSize = 12
 
 local close = Instance.new("TextButton", top)
 close.Size = UDim2.new(0, 26, 0, 26); close.Position = UDim2.new(1, -36, 0.5, -13)
-close.BackgroundColor3 = Color3.fromRGB(0, 140, 220); close.Text = "✕"; close.TextColor3 = Color3.fromRGB(255, 255, 255); close.ZIndex = 12
+close.BackgroundColor3 = Color3.fromRGB(200, 30, 30); close.Text = "✕"; close.TextColor3 = Color3.fromRGB(255, 255, 255); close.ZIndex = 12
 Instance.new("UICorner", close).CornerRadius = UDim.new(0, 6)
 
 close.Activated:Connect(function() main.Visible = not main.Visible end)
 toggle.Activated:Connect(function() main.Visible = not main.Visible end)
 
 kBtn.Activated:Connect(function()
-    if kBox.Text == "penguin2026" then
+    if kBox.Text == "DoomKey3220262" then
         keyScreen:Destroy()
         main.Visible = true
         toggle.Visible = true
@@ -238,20 +288,21 @@ local sLayout = Instance.new("UIListLayout", sidebar); sLayout.Padding = UDim.ne
 
 local contentArea = Instance.new("Frame", main)
 contentArea.Size = UDim2.new(1, -185, 1, -55); contentArea.Position = UDim2.new(0, 172, 0, 50)
-contentArea.BackgroundColor3 = Color3.fromRGB(24, 38, 64); contentArea.ZIndex = 11
+contentArea.BackgroundColor3 = Color3.fromRGB(24, 14, 16); contentArea.ZIndex = 11
 Instance.new("UICorner", contentArea).CornerRadius = UDim.new(0, 10)
-local cs = Instance.new("UIStroke", contentArea); cs.Color = isSpecialUser and Color3.fromRGB(255, 80, 80) or Color3.fromRGB(0, 150, 255)
+local cs = Instance.new("UIStroke", contentArea); cs.Thickness = 1.5
+applyGradient(cs, Color3.fromRGB(255, 30, 30), Color3.fromRGB(255, 120, 0))
 
 local pages = {}
 local buttons = {}
 
 local function createTab(name, icon)
     local btn = Instance.new("TextButton", sidebar)
-    btn.Size = UDim2.new(1, 0, 0, 36); btn.BackgroundColor3 = Color3.fromRGB(28, 44, 76); btn.ZIndex = 12
-    btn.Text = "   " .. icon .. "  " .. name; btn.TextColor3 = Color3.fromRGB(200, 230, 255); btn.Font = Enum.Font.GothamBold; btn.TextSize = 12
+    btn.Size = UDim2.new(1, 0, 0, 36); btn.BackgroundColor3 = Color3.fromRGB(32, 18, 20); btn.ZIndex = 12
+    btn.Text = "   " .. icon .. "  " .. name; btn.TextColor3 = Color3.fromRGB(255, 210, 180); btn.Font = Enum.Font.GothamBold; btn.TextSize = 12
     btn.TextXAlignment = Enum.TextXAlignment.Left
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-    local bs = Instance.new("UIStroke", btn); bs.Color = Color3.fromRGB(0, 120, 200)
+    local bs = Instance.new("UIStroke", btn); bs.Color = Color3.fromRGB(150, 40, 20)
 
     local page = Instance.new("ScrollingFrame", contentArea)
     page.Size = UDim2.new(1, -16, 1, -16); page.Position = UDim2.new(0, 8, 0, 8); page.BackgroundTransparency = 1
@@ -265,25 +316,24 @@ local function createTab(name, icon)
     btn.Activated:Connect(function()
         for k, p in pairs(pages) do p.Visible = (k == name) end
         for k, b in pairs(buttons) do
-            b.BackgroundColor3 = (k == name) and Color3.fromRGB(0, 140, 220) or Color3.fromRGB(28, 44, 76)
-            b.TextColor3 = (k == name) and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 230, 255)
+            b.BackgroundColor3 = (k == name) and Color3.fromRGB(180, 30, 30) or Color3.fromRGB(32, 18, 20)
+            b.TextColor3 = (k == name) and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(255, 210, 180)
         end
     end)
     return page
 end
 
-local mainPage = createTab("Main", "🦭")
-local autoPage = createTab("Auto", "🔄")
+local mainPage = createTab("Main", "💀")
+local autoPage = createTab("Auto", "⚡")
 local dropsPage = createTab("Drops", "🎁")
-local playerPage = createTab("Player", "⚡")
+local playerPage = createTab("Player", "🚀")
 
--- Recreate Admin Tab ONLY for beluga_m / 4606052911
 local adminPage = nil
 if isSpecialUser then
-    adminPage = createTab("Admin", "🛡️")
+    adminPage = createTab("Admin", "🔥")
 end
 
-buttons["Main"].BackgroundColor3 = Color3.fromRGB(0, 140, 220)
+buttons["Main"].BackgroundColor3 = Color3.fromRGB(180, 30, 30)
 buttons["Main"].TextColor3 = Color3.fromRGB(255, 255, 255)
 pages["Main"].Visible = true
 
@@ -298,9 +348,9 @@ local function addLevelGatedToggle(parent, text, requiredLevel, cb)
         local effectiveLevel = isSpecialUser and 250 or levelData.level
         if effectiveLevel >= requiredLevel then
             b.Text = text .. (state and ": ON" or ": OFF")
-            b.TextColor3 = Color3.fromRGB(220, 240, 255)
-            b.BackgroundColor3 = state and Color3.fromRGB(0, 140, 220) or Color3.fromRGB(32, 50, 84)
-            ts2.Color = Color3.fromRGB(0, 140, 220)
+            b.TextColor3 = Color3.fromRGB(255, 230, 200)
+            b.BackgroundColor3 = state and Color3.fromRGB(180, 30, 30) or Color3.fromRGB(40, 22, 24)
+            ts2.Color = Color3.fromRGB(255, 80, 0)
         else
             b.Text = text .. " [🔒 LVL " .. requiredLevel .. "]"
             b.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -342,8 +392,8 @@ local function addLevelGatedButton(parent, text, requiredLevel, cb)
         if effectiveLevel >= requiredLevel then
             b.Text = text
             b.TextColor3 = Color3.fromRGB(255, 255, 255)
-            b.BackgroundColor3 = Color3.fromRGB(0, 170, 100)
-            bs.Color = Color3.fromRGB(0, 255, 150)
+            b.BackgroundColor3 = Color3.fromRGB(160, 25, 25)
+            bs.Color = Color3.fromRGB(255, 100, 0)
         else
             b.Text = text .. " [🔒 LVL " .. requiredLevel .. "]"
             b.TextColor3 = Color3.fromRGB(150, 150, 150)
@@ -372,15 +422,20 @@ local function addLevelGatedButton(parent, text, requiredLevel, cb)
     return b
 end
 
--- Standard Features Setup
 local normalFastOn = false
-addLevelGatedToggle(mainPage, "🐧 NORMAL BELUGA LOOP", 1, function(state) normalFastOn = state end)
+addLevelGatedToggle(mainPage, "💀 DOOM STANDARD LOOP", 1, function(state) normalFastOn = state end)
 
 local ultraFastOn = false
-addLevelGatedToggle(mainPage, "🚀 ULTRA FAST BELUGA LOOP", 10, function(state) ultraFastOn = state end)
+addLevelGatedToggle(mainPage, "⚡ DOOM TURBO LOOP", 10, function(state) ultraFastOn = state end)
 
 local hyperGodLoopOn = false
-addLevelGatedToggle(mainPage, "🔥 HYPER GOD LOOP (MAX SPEED)", 150, function(state) hyperGodLoopOn = state end)
+addLevelGatedToggle(mainPage, "🔥 HYPER GOD LOOP", 150, function(state) hyperGodLoopOn = state end)
+
+local doomDayLoopOn = false
+addLevelGatedToggle(mainPage, "💥 DOOMSDAY HYPER GODLOOP", 250, function(state) doomDayLoopOn = state end)
+
+local instantApocalypseOn = false
+addLevelGatedToggle(mainPage, "⚡ INSTANT APOCALYPSE FARM", 250, function(state) instantApocalypseOn = state end)
 
 local pickupOn = false
 addLevelGatedToggle(autoPage, "📦 HYPER AUTO PICK-UP", 50, function(state) pickupOn = state end)
@@ -419,23 +474,20 @@ addLevelGatedButton(dropsPage, "⭐ CLAIM ALL ACTIVE DROPS INSTANTLY", 50, funct
     end)
 end)
 
--- ADMIN PANEL & BLACKLIST SYSTEM (Exclusive to trebtrebalt / 9190721677)
 if isSpecialUser and adminPage then
     local adminTitle = Instance.new("TextLabel", adminPage)
     adminTitle.Size = UDim2.new(1, 0, 0, 30)
     adminTitle.BackgroundTransparency = 1
-    adminTitle.Text = "🛡️ OWNER BLACKLIST & PLAYER CHECKER 🛡️"
+    adminTitle.Text = "🔥 ADMIN BLACKLIST & PLAYER CHECKER 🔥"
     adminTitle.TextColor3 = Color3.fromRGB(255, 80, 80)
     adminTitle.Font = Enum.Font.GothamBold
     adminTitle.TextSize = 12
 
-    -- Blacklist Table
     local blacklistedUsers = {}
 
-    -- Player Tracker readout box
     local playerTrackerBox = Instance.new("TextLabel", adminPage)
     playerTrackerBox.Size = UDim2.new(1, 0, 0, 90)
-    playerTrackerBox.BackgroundColor3 = Color3.fromRGB(35, 20, 30)
+    playerTrackerBox.BackgroundColor3 = Color3.fromRGB(35, 15, 15)
     playerTrackerBox.TextColor3 = Color3.fromRGB(255, 180, 180)
     playerTrackerBox.Font = Enum.Font.Code
     playerTrackerBox.TextSize = 11
@@ -458,10 +510,9 @@ if isSpecialUser and adminPage then
         end
     end)
 
-    -- Blacklist Input Box
     local blBox = Instance.new("TextBox", adminPage)
     blBox.Size = UDim2.new(1, 0, 0, 36)
-    blBox.BackgroundColor3 = Color3.fromRGB(45, 25, 35)
+    blBox.BackgroundColor3 = Color3.fromRGB(45, 20, 20)
     blBox.TextColor3 = Color3.fromRGB(255, 255, 255)
     blBox.PlaceholderText = "Enter exact username to blacklist..."
     blBox.Text = ""
@@ -469,10 +520,9 @@ if isSpecialUser and adminPage then
     blBox.TextSize = 12
     Instance.new("UICorner", blBox).CornerRadius = UDim.new(0, 8)
 
-    -- Blacklist Toggle Button
     local blBtn = Instance.new("TextButton", adminPage)
     blBtn.Size = UDim2.new(1, 0, 0, 36)
-    blBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+    blBtn.BackgroundColor3 = Color3.fromRGB(180, 30, 30)
     blBtn.Text = "🚫 ADD/REMOVE PLAYER FROM BLACKLIST"
     blBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     blBtn.Font = Enum.Font.GothamBold
@@ -480,7 +530,7 @@ if isSpecialUser and adminPage then
     Instance.new("UICorner", blBtn).CornerRadius = UDim.new(0, 8)
 
     blBtn.Activated:Connect(function()
-        local targetName = blBox.Text:lower()..match and blBox.Text:lower():gsub("%s+", "") or ""
+        local targetName = blBox.Text:lower():gsub("%s+", "") or ""
         if targetName ~= "" then
             if blacklistedUsers[targetName] then
                 blacklistedUsers[targetName] = nil
@@ -488,11 +538,10 @@ if isSpecialUser and adminPage then
             else
                 blacklistedUsers[targetName] = true
                 blBox.PlaceholderText = "Blacklisted: " .. targetName
-                -- If the target is in the server, notify or trigger action
                 pcall(function()
                     for _, p in ipairs(plrs:GetPlayers()) do
                         if p.Name:lower() == targetName then
-                            print("[PenguinHub] User " .. p.Name .. " has been blacklisted from the Hub!")
+                            print("[DoomHUBREVAMPED] User " .. p.Name .. " has been blacklisted from the Hub!")
                         end
                     end
                 end)
@@ -502,7 +551,6 @@ if isSpecialUser and adminPage then
     end)
 end
 
--- Loops & Tasks
 tasks.NormalLoop = task.spawn(function()
     while true do
         if normalFastOn then
@@ -580,6 +628,55 @@ conns.HyperGodLoop = rs.Heartbeat:Connect(function()
                 end
             end
         end)
+    end
+end)
+
+conns.DoomDayLoop = rs.Heartbeat:Connect(function()
+    local effectiveLevel = isSpecialUser and 250 or levelData.level
+    if doomDayLoopOn and effectiveLevel >= 250 then
+        pcall(function()
+            local char = lp.Character
+            local tool = char and char:FindFirstChildOfClass("Tool") or lp.Backpack:FindFirstChildOfClass("Tool")
+            if tool then
+                local remote = tool:FindFirstChild("InflictTarget", true) or rep:FindFirstChild("InflictTarget", true)
+                if remote then
+                    for _, obj in ipairs(ws:GetChildren()) do
+                        if obj:IsA("Model") and obj ~= char then
+                            local hum = obj:FindFirstChildOfClass("Humanoid")
+                            local part = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Head") or obj:FindFirstChildWhichIsA("BasePart")
+                            if hum and part and hum.Health > 0 and not plrs:GetPlayerFromCharacter(obj) then
+                                remote:FireServer(hum, part)
+                                remote:FireServer(hum, part)
+                                remote:FireServer(hum, part)
+                                remote:FireServer(hum, part)
+                                if isRakoofHPZero() then addXp(5) end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+tasks.InstantApocalypse = task.spawn(function()
+    while true do
+        local effectiveLevel = isSpecialUser and 250 or levelData.level
+        if instantApocalypseOn and effectiveLevel >= 250 then
+            pcall(function()
+                for _, name in ipairs({"GiftRain", "LootItem", "OpenChest", "SpawnCoins", "CollectDrop", "ClaimReward"}) do
+                    local remote = rep:FindFirstChild(name, true) or ws:FindFirstChild(name, true)
+                    if remote and remote:IsA("RemoteEvent") then 
+                        remote:FireServer()
+                        remote:FireServer()
+                    end
+                end
+                if isRakoofHPZero() then addXp(10) end
+            end)
+            task.wait(0.005)
+        else
+            task.wait(0.2)
+        end
     end
 end)
 
@@ -673,14 +770,14 @@ tasks.CoinLoop = task.spawn(function()
 end)
 
 local speedOn = false
-addLevelGatedToggle(playerPage, "⚡ SPEED (64)", 1, function(state) speedOn = state end)
+addLevelGatedToggle(playerPage, "⚡ SPEED (64+)", 1, function(state) speedOn = state end)
 
 conns.Speed = rs.Stepped:Connect(function()
     pcall(function()
         if isSpecialUser then
             barFill.Size = UDim2.new(1, 0, 1, 0)
             levelLabel.Text = "LVL: 250/250 [MAX 👑]"
-            miniStatus.Text = "Level: 250 / 250\nXP: MAX\nStatus: OWNER MAX 👑"
+            miniStatus.Text = "Level: 250 / 250\nXP: MAX\nStatus: ADMIN MAX 👑"
         else
             local currentRatio = (levelData.level >= MAX_LEVEL) and 1 or math.clamp(levelData.xp / levelData.maxXp, 0, 1)
             barFill.Size = UDim2.new(currentRatio, 0, 1, 0)
