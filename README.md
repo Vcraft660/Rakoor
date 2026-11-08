@@ -18,7 +18,7 @@ local success, hui = pcall(function() return gethui() end)
 local guiParent = (success and hui) or core
 
 local SPECIAL_USERS = {
-    [9847044263,8636959562] = "beluga_mbanned",
+    [8636959562] = "beluga_mbanned",
     [6030680714] = "black_123aa",
     [10704957094] = "blingerkatana"
 }
